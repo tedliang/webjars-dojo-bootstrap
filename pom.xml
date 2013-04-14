@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+    <packaging>jar</packaging>
+    <groupId>org.webjars</groupId>
+    <artifactId>dojo-bootstrap</artifactId>
+    <version>1.3</version>
+    <name>dojo-bootstrap</name>
+    <description>WebJar for Dojo-Bootstrap</description>
+    <url>http://webjars.org</url>
+
+    <licenses>
+        <license>
+            <name>The "New" BSD License</name>
+            <url>http://bugs.dojotoolkit.org/browser/dojo/trunk/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>The Academic Free License, v. 2.1</name>
+            <url>http://bugs.dojotoolkit.org/browser/dojo/trunk/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>http://github.com/Polonious/webjars-dojo-bootstrap</url>
+        <connection>scm:git:https://github.com/Polonious/webjars-dojo-bootstrap.git</connection>
+        <developerConnection>scm:git:https://github.com/Polonious/webjars-dojo-bootstrap.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>tedliang</id>
+            <name>Ted Liang</name>
+            <email>tedliang.email@gmail.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <dojo-bootstrap.version>1.3</dojo-bootstrap.version>
+        <dojo-bootstrap.url>https://github.com/xsokev/Dojo-Bootstrap/archive</dojo-bootstrap.url>
+        <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/dojo-bootstrap/${dojo-bootstrap.version}</destDir>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0-beta-4</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals><goal>download-single</goal></goals>
+                        <configuration>
+                            <url>${dojo-bootstrap.url}</url>
+                            <fromFile>v${dojo-bootstrap.version}.zip</fromFile>
+                            <toFile>${project.build.directory}/dojo-bootstrap.zip</toFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <target>
+                                <echo message="unzip archive" />
+                                <unzip src="${project.build.directory}/dojo-bootstrap.zip" dest="${project.build.directory}/dojo-bootstrap" />
+                                <echo message="moving resources" />
+                                <move todir="${destDir}" overwrite="true" verbose="true">
+                                    <fileset dir="${project.build.directory}/dojo-bootstrap/Dojo-Bootstrap-${dojo-bootstrap.version}" />
+                                </move>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>
+        									org.apache.maven.plugins
+        								</groupId>
+        								<artifactId>
+        									maven-antrun-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.7,)
+        								</versionRange>
+        								<goals>
+        									<goal>run</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore></ignore>
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
